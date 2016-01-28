@@ -7,31 +7,60 @@
 //
 
 #import "HomeVC.h"
-
+#import "iOSRequest.h"
 @interface HomeVC ()
 
 @end
 
 @implementation HomeVC
+{
+    NSArray *arrayDetails;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+     [self.navigationController setNavigationBarHidden:NO animated:YES];
+}
+- (void)searchSample
+{
+    NSString *keyword = @"tuanhung";
+    arrayDetails = nil;
+    [iOSRequest search:keyword onCompletion:^(NSDictionary *jsonData) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            arrayDetails = jsonData[@"items"];
+            for (NSDictionary *item in arrayDetails) {
+                NSDictionary *snippet = item[@"snippet"];
+                // NSLog(@"%@",snippet[@"title"]);
+            }
+            [self.tableView reloadData];
+        });
+    }];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 5; //arrayDetails.count;
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 35.0;
 }
-*/
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    NSDictionary *item = (NSDictionary *)[arrayDetails objectAtIndex:indexPath.row];
+    NSDictionary *snippet = item[@"snippet"];
+    cell.textLabel.text = @"子育て世代のお母さんの健診について";//[snippet objectForKey:@"title"];
+    NSURL *urlImage = [NSURL URLWithString:snippet[@"thumbnails"][@"default"][@"url"]];
+    //    NSData *dataImage = [NSData dataWithContentsOfURL:urlImage];
+    //  cell.imageView.image = [UIImage imageWithData:dataImage];
+    cell.detailTextLabel.text = @"16/01/2016";
+    return cell;
+}
+
 
 @end

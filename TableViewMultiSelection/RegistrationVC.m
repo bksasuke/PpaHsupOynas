@@ -1,8 +1,8 @@
 //
-//  TableViewController.m
-//  TableViewMultiSelection
+//  RegistrationVC.m
+//  OtherSanyoPushApp
 //
-//  Created by Tà Truhoada on 10/26/15.
+//  Created by suke on 1/26/16.
 //  Copyright © 2015 Hoang Dang Trung. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 #import "Person.h"
 #import "Cell.h"
 
-@interface RegistrationVC ()
+@interface RegistrationVC () <UITextFieldDelegate>
 @end
 
 @implementation RegistrationVC {
@@ -26,68 +26,38 @@
     }
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"topBanner.jpg"] forBarMetrics:UIBarMetricsDefault];
-}
-- (void) onAdd {
-    Person *personData = [[Person alloc] init];
-    [arrayData addObject:personData];
+    [self setUpSupplement];
     
-    [self.tableView reloadData];
+    
 }
+
+#pragma mark - Edit tableView
 - (IBAction)onAddd:(id)sender {
     Person *personData = [[Person alloc] init];
     [arrayData addObject:personData];
     
     [self.tableView reloadData];
 }
-
-- (void) onEdit {
-    if (self.tableView.editing) {
-        [self.tableView setEditing:false animated:YES];
-        self.navigationItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:@"Edit"
-                                         style:UIBarButtonItemStylePlain
-                                        target:self
-                                        action:@selector(onEdit)];
-    } else {
-        
-        [self.tableView setEditing:true animated:YES];
-        self.navigationItem.rightBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:@"Delete"
-                                         style:UIBarButtonItemStylePlain
-                                        target:self
-                                        action:@selector(onDelete)];
-        self.navigationItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:@"Done"
-                                         style:UIBarButtonItemStylePlain
-                                        target:self
-                                        action:@selector(onEdit)];
-    }
+-(BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return NO;
 }
--(UIView *) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    static NSString *CellIdentifier = @"SectionFooter";
-    UITableViewCell *headerView = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (headerView == nil){
-        [NSException raise:@"headerView == nil.." format:@"No cells with matching CellIdentifier loaded from your storyboard"];
-    }
-    return headerView;
+-(void)setUpSupplement {
+    self.txtBirthday.delegate = self;
+    self.txtBirthday.delegate = self;
+    self.txtPostID.delegate =   self;
 }
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return 150;}
-
-- (void) onDelete {
-    NSArray *selectedRows;
-    selectedRows = self.tableView.indexPathsForSelectedRows;
-    if (selectedRows.count > 0) {
-        NSMutableIndexSet *indicesOfItemsToDelete = [[NSMutableIndexSet alloc] init];
-        for (NSIndexPath *selectedIndex in selectedRows) {
-            [indicesOfItemsToDelete addIndex: selectedIndex.row];
-        }
-        [arrayData removeObjectsAtIndexes:indicesOfItemsToDelete];
-        [self.tableView deleteRowsAtIndexPaths:selectedRows withRowAnimation:UITableViewRowAnimationAutomatic];
-    }
-}
-
 #pragma mark - Table view data source
+//-(UIView *) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+//    static NSString *CellIdentifier = @"SectionFooter";
+//    UIView *headerView = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+//    if (headerView == nil){
+//        [NSException raise:@"headerView == nil.." format:@"No cells with matching CellIdentifier loaded from your storyboard"];
+//    }
+//    return headerView;
+//}
+//- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+//    return 150;}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return arrayData.count;
@@ -101,8 +71,8 @@
     Cell *cell = (Cell*)[tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     Person *personData = [[Person alloc] init];
     personData = arrayData[indexPath.row];
+    cell.txtBirthday.delegate =self;
     return cell;
-    
 }
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -118,6 +88,36 @@
     [arrayData removeObjectAtIndex:sourceIndexPath.row];
     [arrayData insertObject:person atIndex:destinationIndexPath.row];
 }
+
+#pragma mark - Text and table up for rational
+// Enable textfield up when neccessary
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    if (textField.frame.origin.y > 240) {
+        [self animateTextField:textField up:YES];
+    }
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    if (textField.frame.origin.y > 240) {
+        [self animateTextField:textField up:NO]; }
+}
+
+-(void)animateTextField:(UITextField*)textField up:(BOOL)up
+{
+    const int movementDistance = -130; // tweak as needed
+    const float movementDuration = 0.3f; // tweak as needed
+    
+    int movement = (up ? movementDistance : -movementDistance);
+    
+    [UIView beginAnimations: @"animateTextField" context: nil];
+    [UIView setAnimationBeginsFromCurrentState: YES];
+    [UIView setAnimationDuration: movementDuration];
+    self.view.frame = CGRectOffset(self.view.frame, 0, movement);
+    [UIView commitAnimations];
+}
+
 
 @end
 

@@ -10,7 +10,7 @@
 
 @interface Cell : UITableViewCell
 
-@property (weak, nonatomic) IBOutlet UITextField *txtBirthday;
+@property (strong, nonatomic) IBOutlet UITextField *txtBirthday;
 @property (weak, nonatomic) IBOutlet UIButton *btnBoy;
 @property (weak, nonatomic) IBOutlet UIButton *btnGirl;
 @property (weak, nonatomic) IBOutlet UIButton *btnNotSure;

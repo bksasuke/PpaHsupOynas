@@ -7,9 +7,8 @@
 //
 
 #import "TermsOfUseVC.h"
-
+#import "iOSRequest.h"
 @interface TermsOfUseVC () <UINavigationControllerDelegate>
-@property (weak, nonatomic) IBOutlet UITextView *textView;
 
 //@property(nonatomic, weak)IBOutlet UIButton *backButton;
 @end
@@ -18,17 +17,21 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    self.textView.editable =NO;
+    [self.webView setBackgroundColor:[UIColor clearColor]];
+    [self loadWebView];
+    [self.navigationController setNavigationBarHidden:YES];
 }
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)loadWebView
+{
+    NSMutableURLRequest * request =[NSMutableURLRequest
+                                    requestWithURL:[NSURL URLWithString:@"http://mistral-design.net/test/onod//"]];
+    [self.webView loadRequest:request];
 }
-
--(IBAction)backAction:(id)sender{
+- (IBAction)onBack:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController setNavigationBarHidden:NO];
 }
+
+
 
 @end

@@ -41,7 +41,9 @@
                 </subviews>
             </tableViewCellContentView>
             <connections>
-                <outlet property="btnBoy" destination="ats-yF-5Yp" id="iXm-hM-g2M"/>
+                <outlet property="btnBoy" destination="ats-yF-5Yp" id="E1h-lq-cVb"/>
+                <outlet property="btnGirl" destination="O2F-MM-hq8" id="rop-pC-RiV"/>
+                <outlet property="btnNotSure" destination="iwR-q2-I1p" id="kDa-7c-K71"/>
                 <outlet property="txtBirthday" destination="O77-ul-ig3" id="C6P-eN-6PM"/>
             </connections>
             <point key="canvasLocation" x="204" y="321"/>
